@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCC Dashboard</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    
+    <!-- Application Scripts (Loaded sequentially in global namespace) -->
+    <script src="js/utils.js" defer></script>
+    <script src="js/mock-data.js" defer></script>
+    <script src="js/store.js" defer></script>
+    <script src="js/sla.js" defer></script>
+    <script src="js/router.js" defer></script>
+    <script src="js/dashboard.js" defer></script>
+    <script src="js/alerts.js" defer></script>
+    <script src="js/incidents.js" defer></script>
+    <script src="js/requests.js" defer></script>
+    <script src="js/handovers.js" defer></script>
+    <script src="js/assets.js" defer></script>
+    <script src="js/customers.js" defer></script>
+    <script src="js/reports.js" defer></script>
+    <script src="js/audit.js" defer></script>
+    <script src="js/settings.js" defer></script>
+    <script src="js/simulator.js" defer></script>
+    <script src="js/app.js" defer></script>
+</head>
+<body>
+
+<div id="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i data-lucide="shield-alert" class="logo-icon"></i>
+                <span class="logo-text">GCC Ops</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav" id="sidebar-nav">
+            <a href="#/dashboard" class="nav-item active" data-route="dashboard">
+                <i data-lucide="layout-dashboard" class="nav-icon"></i>
+                <span class="nav-label">Overview</span>
+            </a>
+            <a href="#/alerts" class="nav-item" data-route="alerts">
+                <i data-lucide="bell" class="nav-icon"></i>
+                <span class="nav-label">Alerts</span>
+            </a>
+            <a href="#/incidents" class="nav-item" data-route="incidents">
+                <i data-lucide="alert-triangle" class="nav-icon"></i>
+                <span class="nav-label">Incidents</span>
+            </a>
+            <a href="#/requests" class="nav-item" data-route="requests">
+                <i data-lucide="inbox" class="nav-icon"></i>
+                <span class="nav-label">Customer Requests</span>
+            </a>
+            <a href="#/handovers" class="nav-item" data-route="handovers">
+                <i data-lucide="clipboard-list" class="nav-icon"></i>
+                <span class="nav-label">Shift Handover</span>
+            </a>
+            <a href="#/assets" class="nav-item" data-route="assets">
+                <i data-lucide="server" class="nav-icon"></i>
+                <span class="nav-label">Assets</span>
+            </a>
+            <a href="#/customers" class="nav-item" data-route="customers">
+                <i data-lucide="users" class="nav-icon"></i>
+                <span class="nav-label">Customers</span>
+            </a>
+            <a href="#/reports" class="nav-item" data-route="reports">
+                <i data-lucide="bar-chart-2" class="nav-icon"></i>
+                <span class="nav-label">Reports</span>
+            </a>
+            <a href="#/audit" class="nav-item" data-route="audit">
+                <i data-lucide="history" class="nav-icon"></i>
+                <span class="nav-label">Audit Log</span>
+            </a>
+            <a href="#/settings" class="nav-item" data-route="settings">
+                <i data-lucide="settings" class="nav-icon"></i>
+                <span class="nav-label">Settings</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button id="toggle-sidebar" class="toggle-sidebar-btn" title="Toggle Sidebar">
+                <i data-lucide="panel-left-close"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+        
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <!-- Mobile Menu Button (hidden on desktop) -->
+                <button id="mobile-menu-btn" class="icon-btn" style="display: none;">
+                    <i data-lucide="menu"></i>
+                </button>
+                
+                <div class="header-search">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" placeholder="Search alerts, incidents (Ctrl+K)...">
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-info-item">
+                    <i data-lucide="calendar" class="icon"></i>
+                    <span id="current-shift-label">Day Shift</span>
+                </div>
+                
+                <div class="header-info-item">
+                    <i data-lucide="clock" class="icon"></i>
+                    <span id="header-clock" class="header-clock">--:--:-- Z</span>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="icon-btn" id="theme-toggle" title="Toggle Theme">
+                        <i data-lucide="sun"></i>
+                    </button>
+                    
+                    <button class="icon-btn" title="Critical Incidents">
+                        <i data-lucide="alert-circle"></i>
+                        <span class="badge" id="critical-badge">0</span>
+                    </button>
+                    
+                    <button class="icon-btn" title="Notifications">
+                        <i data-lucide="bell"></i>
+                        <span class="badge" id="notif-badge">0</span>
+                    </button>
+                </div>
+                
+                <div class="user-profile" id="user-menu-btn">
+                    <div class="avatar" id="user-avatar">A</div>
+                    <div class="user-info">
+                        <span class="user-name" id="user-name">Analyst</span>
+                        <span class="user-role" id="user-role">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="page-content" id="page-content">
+            <div id="view-container">
+                <!-- Routed content will be injected here -->
+                <div class="skeleton" style="height: 100px; margin-bottom: 20px;"></div>
+                <div class="skeleton" style="height: 300px;"></div>
+            </div>
+        </main>
+        
+    </div>
+</div>
+
+<!-- Global Toast Container -->
+<div id="toast-container" class="toast-container"></div>
+
+</body>
+</html>

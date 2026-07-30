@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCC Dashboard - Login</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/components.css">
+    
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-primary);
+            background-image: radial-gradient(circle at center, var(--bg-elevated) 0%, var(--bg-primary) 100%);
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: var(--space-6);
+        }
+        
+        .login-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            padding: var(--space-8) var(--space-6);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-6);
+        }
+        
+        .login-header {
+            text-align: center;
+        }
+        
+        .login-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background-color: var(--bg-elevated);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-4);
+            color: var(--accent-primary);
+        }
+        
+        .login-title {
+            font-size: var(--text-2xl);
+            font-weight: var(--weight-bold);
+            margin-bottom: var(--space-2);
+        }
+        
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .demo-accounts {
+            background-color: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            font-size: var(--text-sm);
+        }
+        
+        .demo-title {
+            font-weight: var(--weight-semibold);
+            margin-bottom: var(--space-2);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .demo-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+            color: var(--text-secondary);
+        }
+        
+        .demo-account {
+            cursor: pointer;
+            padding: var(--space-1);
+            border-radius: var(--radius-sm);
+            transition: background-color var(--transition-fast);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .demo-account:hover {
+            background-color: var(--border-default);
+            color: var(--text-primary);
+        }
+        
+        .error-msg {
+            color: var(--color-critical);
+            font-size: var(--text-sm);
+            text-align: center;
+            min-height: 20px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .error-msg.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="login-logo">
+                <i data-lucide="shield-alert" width="32" height="32"></i>
+            </div>
+            <h1 class="login-title">GCC Operations</h1>
+            <p class="login-subtitle">Global Command Centre Dashboard</p>
+        </div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input type="email" id="email" class="form-control" placeholder="analyst@gcc-demo.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+            </div>
+            
+            <div id="error-message" class="error-msg">Invalid credentials.</div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: var(--space-2); padding: var(--space-3);">
+                Sign In <i data-lucide="arrow-right" width="16" height="16"></i>
+            </button>
+        </form>
+        
+        <div class="demo-accounts">
+            <div class="demo-title"><i data-lucide="info" width="16" height="16"></i> Demo Accounts (PW: demo123)</div>
+            <div class="demo-list">
+                <div class="demo-account" onclick="fillDemo('analyst@gcc-demo.com')">
+                    <span>Analyst</span>
+                    <span>analyst@...</span>
+                </div>
+                <div class="demo-account" onclick="fillDemo('shiftlead@gcc-demo.com')">
+                    <span>Shift Lead</span>
+                    <span>shiftlead@...</span>
+                </div>
+                <div class="demo-account" onclick="fillDemo('admin@gcc-demo.com')">
+                    <span>Admin</span>
+                    <span>admin@...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    // Initialize icons
+    lucide.createIcons();
+    
+    // Check if already logged in
+    if (localStorage.getItem('gcc_session')) {
+        window.location.href = 'index.html';
+    }
+    
+    function fillDemo(email) {
+        document.getElementById('email').value = email;
+        document.getElementById('password').value = 'demo123';
+    }
+    
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const errorEl = document.getElementById('error-message');
+        
+        if (password === 'demo123' && email.includes('@gcc-demo.com')) {
+            errorEl.classList.remove('show');
+            // Mock authentication success
+            const sessionData = {
+                id: email.split('@')[0] === 'analyst' ? 'USR-001' : 'USR-002',
+                email: email,
+                role: email.split('@')[0],
+                name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1),
+                token: 'mock-jwt-token-' + Date.now()
+            };
+            
+            localStorage.setItem('gcc_session', JSON.stringify(sessionData));
+            window.location.href = 'index.html';
+        } else {
+            errorEl.classList.add('show');
+        }
+    });
+</script>
+
+</body>
+</html>
